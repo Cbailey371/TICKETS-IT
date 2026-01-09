@@ -1,0 +1,294 @@
+import { useState, useEffect } from 'react';
+import { Building2, Plus, Search, MoreVertical, X, Loader2, Save, Trash2, Edit2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+
+const CompanyListPage = () => {
+    const { user } = useAuth();
+    const [companies, setCompanies] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [editingCompany, setEditingCompany] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // Form State
+    const [formData, setFormData] = useState({
+        name: '',
+        address: '',
+        contact_email: '',
+        status: 'active'
+    });
+
+    useEffect(() => {
+        fetchCompanies();
+    }, []);
+
+    useEffect(() => {
+        if (editingCompany) {
+            setFormData({
+                name: editingCompany.name,
+                address: editingCompany.address || '',
+                contact_email: editingCompany.contact_email || '',
+                status: editingCompany.status
+            });
+            setShowModal(true);
+        }
+    }, [editingCompany]);
+
+    const fetchCompanies = async () => {
+        try {
+            const userInfo = localStorage.getItem('userInfo');
+            const token = userInfo ? JSON.parse(userInfo).token : null;
+            const res = await fetch('http://localhost:3000/api/companies', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            setCompanies(data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching companies", error);
+            setLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const userInfo = localStorage.getItem('userInfo');
+        const token = userInfo ? JSON.parse(userInfo).token : null;
+
+        try {
+            const url = editingCompany
+                ? `http://localhost:3000/api/companies/${editingCompany.id}`
+                : 'http://localhost:3000/api/companies';
+
+            const method = editingCompany ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (res.ok) {
+                setShowModal(false);
+                setEditingCompany(null);
+                setFormData({ name: '', address: '', contact_email: '', status: 'active' });
+                fetchCompanies();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!confirm('¿Estás seguro de eliminar esta empresa?')) return;
+        const userInfo = localStorage.getItem('userInfo');
+        const token = userInfo ? JSON.parse(userInfo).token : null;
+
+        try {
+            await fetch(`http://localhost:3000/api/companies/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            fetchCompanies();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleEdit = (company) => {
+        setEditingCompany(company);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setEditingCompany(null);
+        setFormData({ name: '', address: '', contact_email: '', status: 'active' });
+    };
+
+    const filteredCompanies = companies.filter(c =>
+        c.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    return (
+        <div className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-text-main">Gestión de Empresas</h1>
+                    <p className="text-text-muted">Administra los clientes y sus configuraciones</p>
+                </div>
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors font-medium"
+                >
+                    <Plus className="w-4 h-4" />
+                    Nueva Empresa
+                </button>
+            </div>
+
+            <div className="bg-surface border border-border-color rounded-2xl overflow-hidden">
+                <div className="p-4 border-b border-border-color flex gap-4">
+                    <div className="relative flex-1 max-w-md">
+                        <Search className="absolute left-3 top-2.5 w-4 h-4 text-text-muted" />
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Buscar empresas..."
+                            className="w-full bg-background border border-border-color rounded-lg pl-9 pr-4 py-2 text-sm text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-text-muted/70"
+                        />
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead className="bg-background/50 text-xs uppercase text-text-muted font-medium">
+                            <tr>
+                                <th className="px-6 py-4">Empresa</th>
+                                <th className="px-6 py-4">Estado</th>
+                                <th className="px-6 py-4">Usuarios</th>
+                                <th className="px-6 py-4">Tickets</th>
+                                <th className="px-6 py-4 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border-color">
+                            {loading ? (
+                                <tr><td colSpan="5" className="px-6 py-8 text-center text-text-muted">Cargando empresas...</td></tr>
+                            ) : filteredCompanies.map((company) => (
+                                <tr key={company.id} className="hover:bg-background/50 transition-colors group">
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-background flex items-center justify-center text-text-muted border border-border-color">
+                                                <Building2 className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <div className="font-medium text-text-main">{company.name}</div>
+                                                <div className="text-xs text-text-muted">{company.contact_email || 'Sin email'}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${company.status === 'active'
+                                            ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                                            : 'bg-background text-text-muted border border-border-color'
+                                            }`}>
+                                            {company.status === 'active' ? 'Activo' : 'Inactivo'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-text-muted">{company.usersCount}</td>
+                                    <td className="px-6 py-4 text-text-muted">{company.ticketsCount}</td>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => handleEdit(company)}
+                                                className="p-2 hover:bg-background rounded-lg text-text-muted hover:text-text-main transition-colors"
+                                                title="Editar"
+                                            >
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(company.id)}
+                                                className="p-2 hover:bg-red-500/10 rounded-lg text-text-muted hover:text-red-500 transition-colors"
+                                                title="Eliminar"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {!loading && filteredCompanies.length === 0 && (
+                                <tr><td colSpan="5" className="px-6 py-8 text-center text-text-muted">No se encontraron empresas.</td></tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Modal de Creación/Edición */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-surface border border-border-color rounded-2xl w-full max-w-lg shadow-2xl animate-in fade-in zoom-in duration-200">
+                        <div className="flex justify-between items-center p-6 border-b border-border-color">
+                            <h2 className="text-xl font-bold text-text-main max-w-[80%] truncate">
+                                {editingCompany ? `Editar ${editingCompany.name}` : 'Nueva Empresa'}
+                            </h2>
+                            <button onClick={handleCloseModal} className="text-text-muted hover:text-text-main transition-colors">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-text-muted">Nombre de la Empresa</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={formData.name}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    className="w-full bg-background border border-border-color rounded-lg px-4 py-2 text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    placeholder="Ej. TechSolutions Inc."
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-text-muted">Email de Contacto</label>
+                                <input
+                                    type="email"
+                                    value={formData.contact_email}
+                                    onChange={e => setFormData({ ...formData, contact_email: e.target.value })}
+                                    className="w-full bg-background border border-border-color rounded-lg px-4 py-2 text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    placeholder="contacto@empresa.com"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-text-muted">Dirección</label>
+                                <input
+                                    type="text"
+                                    value={formData.address}
+                                    onChange={e => setFormData({ ...formData, address: e.target.value })}
+                                    className="w-full bg-background border border-border-color rounded-lg px-4 py-2 text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    placeholder="Calle Principal 123, Ciudad"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-text-muted">Estado</label>
+                                <select
+                                    value={formData.status}
+                                    onChange={e => setFormData({ ...formData, status: e.target.value })}
+                                    className="w-full bg-background border border-border-color rounded-lg px-4 py-2 text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                >
+                                    <option value="active">Activo</option>
+                                    <option value="inactive">Inactivo</option>
+                                </select>
+                            </div>
+
+                            <div className="pt-4 flex justify-end gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleCloseModal}
+                                    className="px-4 py-2 text-text-muted hover:text-text-main transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
+                                >
+                                    <Save className="w-4 h-4" />
+                                    {editingCompany ? 'Guardar Cambios' : 'Crear Empresa'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default CompanyListPage;
