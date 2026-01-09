@@ -179,8 +179,7 @@ const SettingsPage = () => {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-text-main">Configuración</h1>
-                <p className="text-text-muted">Gestiona las preferencias de la aplicación</p>
+                <p className="text-text-muted mt-1">Gestiona las preferencias de la aplicación</p>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-6">

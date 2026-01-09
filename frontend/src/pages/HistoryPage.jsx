@@ -138,16 +138,8 @@ const HistoryPage = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-2">
-                <h1 className="text-2xl font-bold text-text-main flex items-center gap-2">
-                    <History className="w-8 h-8 text-primary" />
-                    Historial de Tickets
-                </h1>
-                <p className="text-text-muted">Consulta y auditoría de tickets cerrados y resueltos.</p>
-            </div>
-
             {/* Header Actions */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6">
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted w-5 h-5" />
                     <input
@@ -304,7 +296,7 @@ const HistoryPage = () => {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize ${incident.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                                                    'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
+                                                'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
                                                 }`}>
                                                 {incident.status === 'resolved' ? 'Resuelto' : 'Cerrado'}
                                             </span>

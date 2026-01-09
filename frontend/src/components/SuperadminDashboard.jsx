@@ -49,8 +49,7 @@ const SuperadminDashboard = () => {
     return (
         <div className="space-y-8">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-text-main">Vista Global (Superadmin)</h1>
-                <div className="flex gap-2">
+                <div className="flex gap-2 ml-auto">
                     <Link to="/companies" className="px-4 py-2 bg-surface hover:bg-background border border-border-color text-text-main rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
                         <Building className="w-4 h-4" />
                         Empresas

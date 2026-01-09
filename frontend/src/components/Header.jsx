@@ -1,4 +1,4 @@
-import { Bell, Search, Sun, Moon } from 'lucide-react';
+import { Bell, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 const Header = ({ title }) => {
@@ -8,16 +8,7 @@ const Header = ({ title }) => {
             <h1 className="text-2xl font-bold text-text-main">{title}</h1>
 
             <div className="flex items-center gap-6">
-                <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Search className="h-5 w-5 text-text-muted group-focus-within:text-primary transition-colors" />
-                    </div>
-                    <input
-                        type="text"
-                        className="bg-background border border-border-color text-text-main text-sm rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent block w-64 pl-10 p-2.5 transition-all placeholder-text-muted/70"
-                        placeholder="Buscar tickets..."
-                    />
-                </div>
+
 
                 <button
                     onClick={toggleTheme}

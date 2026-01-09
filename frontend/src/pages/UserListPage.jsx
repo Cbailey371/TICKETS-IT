@@ -150,8 +150,7 @@ const UserListPage = () => {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-text-main">Gestión de Usuarios</h1>
-                    <p className="text-text-muted">Ver y gestionar usuarios del sistema</p>
+                    <p className="text-text-muted mt-1">Ver y gestionar usuarios del sistema</p>
                 </div>
                 <button
                     onClick={() => setShowModal(true)}

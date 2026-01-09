@@ -48,8 +48,7 @@ const AgentDashboard = () => {
 
     return (
         <div className="space-y-8">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-text-main">Panel de Agente</h1>
+            <div className="flex justify-end items-center">
                 <span className="text-sm text-text-muted">Bienvenido de nuevo</span>
             </div>
 
