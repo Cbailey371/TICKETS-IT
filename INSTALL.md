@@ -141,30 +141,28 @@ sudo nano /etc/nginx/sites-available/smartincident
 **Contenido**:
 ```nginx
 server {
-    server_name smartincident.cbtechpty.com;
-
-    # Frontend (Archivos Estáticos)
-    location / {
-        root /var/www/smartincident/frontend/dist;
-        index index.html;
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Backend (API Proxy)
-    location /api {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    listen 80;
+/* ... (contenido anterior) ... */
 }
 ```
 
-**Activar sitio**:
+## 6.1 Configurar Firewall (UFW)
+**IMPORTANTE**: Si tienes problemas con Certbot, revisa que los puertos 80 y 443 estén abiertos.
+
+```bash
+# Ver estado
+sudo ufw status
+
+# Permitir SSH, HTTP y HTTPS
+sudo ufw allow OpenSSH
+sudo ufw allow 'Nginx Full'
+sudo ufw enable
+```
+
+> [!WARNING]
+> Si usas Oracle Cloud, AWS o Azure, **también debes abrir los puertos 80 y 443 en el panel de control de tu proveedor** (Security Lists / Security Groups).
+
+## 6.2 Activar sitio
+
 ```bash
 sudo ln -s /etc/nginx/sites-available/smartincident /etc/nginx/sites-enabled/
 sudo rm /etc/nginx/sites-enabled/default  # (Opcional: Si es el único sitio)
