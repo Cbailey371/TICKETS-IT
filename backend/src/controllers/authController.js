@@ -1,48 +1,14 @@
-const { User, NotificationConfig } = require('../models');
+const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const { Op } = require('sequelize');
+const { sendEmail } = require('../services/emailService');
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET || 'secret123', {
         expiresIn: '30d',
     });
-};
-
-const sendEmail = async ({ to, subject, text, html }) => {
-    // Fetch active config
-    const config = await NotificationConfig.findOne({ where: { is_active: true } });
-
-    // Use mock or real transporter
-    let transporter;
-    if (config) {
-        transporter = nodemailer.createTransport({
-            host: config.smtp_host,
-            port: config.smtp_port,
-            secure: config.smtp_port == 465, // true for 465, false for other ports
-            auth: {
-                user: config.smtp_user,
-                pass: config.smtp_pass,
-            },
-        });
-    } else {
-        // Fallback to internal/mock for dev if no config
-        console.log("No SMTP Config found, logging email to console.");
-        console.log(`To: ${to}, Subject: ${subject}, Content: ${text}`);
-        return;
-    }
-
-    const info = await transporter.sendMail({
-        from: `Tickets SaaS <${config.sender_email}>`,
-        to,
-        subject,
-        text,
-        html
-    });
-
-    console.log("Message sent: %s", info.messageId);
 };
 
 

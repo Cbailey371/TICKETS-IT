@@ -1,5 +1,6 @@
 const { Incident, User, Company, TicketType, Attachment } = require('../models');
 const { Op } = require('sequelize');
+const { sendEmail } = require('../services/emailService');
 
 exports.createIncident = async (req, res) => {
     try {
@@ -37,6 +38,45 @@ exports.createIncident = async (req, res) => {
                 original_name: req.file.originalname,
                 incident_id: incident.id
             });
+        }
+
+        // NOTIFICATIONS
+        const reporter = await User.findByPk(reporter_id);
+
+        // 1. Notify Reporter (Client)
+        if (reporter && reporter.email) {
+            await sendEmail({
+                to: reporter.email,
+                subject: `Ticket Creado: ${ticket_code} - ${title}`,
+                text: `Hemos recibido tu incidencia. Código: ${ticket_code}. Un agente la revisará pronto.`,
+                html: `<h3>Ticket Registrado</h3><p>Tu incidencia <strong>${ticket_code}</strong> ha sido creada exitosamente.</p><p>Título: ${title}</p>`
+            });
+        }
+
+        // 2. Notify Superadmin (and Assignee if exists)
+        // Ideally filter actual admins, for now hardcoded superadmin for demo
+        const admins = await User.findAll({ where: { role: 'superadmin' } });
+        for (const admin of admins) {
+            if (admin.email) {
+                await sendEmail({
+                    to: admin.email,
+                    subject: `[Nuevo Ticket] ${ticket_code} - ${title}`,
+                    text: `Nuevo ticket creado por ${reporter?.name || 'Usuario'}. Prioridad: ${priority}.`,
+                    html: `<p>Se ha creado un nuevo ticket en el sistema.</p><p><strong>Creado por:</strong> ${reporter?.name}</p><p><strong>Título:</strong> ${title}</p><p><a href="https://smartincident.cbtechpty.com/incidents/${incident.id}">Ver Ticket</a></p>`
+                });
+            }
+        }
+
+        if (assignee_id) {
+            const assignee = await User.findByPk(assignee_id);
+            if (assignee && assignee.email) {
+                await sendEmail({
+                    to: assignee.email,
+                    subject: `[Asignado] Ticket ${ticket_code}`,
+                    text: `Se te ha asignado el ticket ${ticket_code}.`,
+                    html: `<p>Se te ha asignado un nuevo ticket.</p><p><a href="https://smartincident.cbtechpty.com/incidents/${incident.id}">Ver Ticket</a></p>`
+                });
+            }
         }
 
         res.status(201).json(incident);
@@ -142,9 +182,43 @@ exports.updateIncident = async (req, res) => {
         const incident = await Incident.findByPk(req.params.id);
         if (!incident) return res.status(404).json({ error: 'Incident not found' });
 
-        // Add Authz checks here if needed specific to Update
+        const previousAssigneeId = incident.assignee_id;
+        const previousStatus = incident.status;
 
         await incident.update(req.body);
+
+        // Notifications Logic check
+        const updatedIncident = await Incident.findByPk(req.params.id, {
+            include: [
+                { model: User, as: 'reporter', attributes: ['name', 'email'] },
+                { model: User, as: 'assignee', attributes: ['name', 'email'] }
+            ]
+        });
+
+        // A. Assignment Change
+        if (req.body.assignee_id && req.body.assignee_id !== previousAssigneeId) {
+            if (updatedIncident.assignee && updatedIncident.assignee.email) {
+                await sendEmail({
+                    to: updatedIncident.assignee.email,
+                    subject: `[Asignado] Ticket ${updatedIncident.ticket_code}`,
+                    text: `Se te ha asignado el ticket ${updatedIncident.ticket_code}.`,
+                    html: `<p>El ticket <strong>${updatedIncident.ticket_code}</strong> ha sido asignado a tu usuario.</p><p><a href="https://smartincident.cbtechpty.com/incidents/${incident.id}">Ver Ticket</a></p>`
+                });
+            }
+        }
+
+        // B. Status Closed/Resolved
+        if (req.body.status && (req.body.status === 'closed' || req.body.status === 'resolved') && previousStatus !== req.body.status) {
+            if (updatedIncident.reporter && updatedIncident.reporter.email) {
+                await sendEmail({
+                    to: updatedIncident.reporter.email,
+                    subject: `[Actualización] Ticket ${updatedIncident.ticket_code} está ${req.body.status}`,
+                    text: `Tu ticket ha cambiado de estado a: ${req.body.status}.`,
+                    html: `<p>Tu ticket <strong>${updatedIncident.ticket_code}</strong> ha sido actualizado a estado: <strong>${req.body.status}</strong>.</p><p><a href="https://smartincident.cbtechpty.com/incidents/${incident.id}">Ver Ticket</a></p>`
+                });
+            }
+        }
+
         res.json(incident);
     } catch (error) {
         res.status(500).json({ error: error.message });
