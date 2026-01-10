@@ -14,9 +14,117 @@ const SettingsPage = () => {
     const [editingType, setEditingType] = useState(null); // Track editing item
     const [newType, setNewType] = useState({ name: '', sla_response: 60, sla_resolution: 24, is_global: false, companies: [] });
 
-    // ... (useEffect remains same) ...
+    useEffect(() => {
+        if (activeTab === 'catalog' && (user?.role === 'superadmin' || user?.role === 'company_admin')) {
+            fetchTicketTypes();
+            if (user?.role === 'superadmin') fetchCompanies();
+        }
+        if (activeTab === 'email' && user?.role === 'superadmin') {
+            fetchEmailConfig();
+        }
+    }, [activeTab]);
 
-    // ... (fetch logic remains same) ...
+    // Security State
+    const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+
+    // Email Config State
+    const [emailConfig, setEmailConfig] = useState({ smtp_host: '', smtp_port: 587, smtp_user: '', smtp_pass: '', sender_email: '' });
+
+    const fetchEmailConfig = async () => {
+        const userInfo = localStorage.getItem('userInfo');
+        const token = userInfo ? JSON.parse(userInfo).token : null;
+        try {
+            const res = await fetch('/api/settings/notifications', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setEmailConfig(data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            return alert('Las contraseñas no coinciden');
+        }
+
+        const userInfo = localStorage.getItem('userInfo');
+        const token = userInfo ? JSON.parse(userInfo).token : null;
+
+        try {
+            const res = await fetch('/api/auth/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    currentPassword: passwordData.currentPassword,
+                    newPassword: passwordData.newPassword
+                })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                alert('Contraseña actualizada');
+                setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+            } else {
+                alert(data.error);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleUpdateEmailConfig = async (e) => {
+        e.preventDefault();
+        const userInfo = localStorage.getItem('userInfo');
+        const token = userInfo ? JSON.parse(userInfo).token : null;
+
+        try {
+            const res = await fetch('/api/settings/notifications', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(emailConfig)
+            });
+
+            if (res.ok) {
+                alert('Configuración SMTP guardada');
+                fetchEmailConfig(); // Refresh to ensure clean state (e.g. masked password)
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const fetchTicketTypes = async () => {
+        const userInfo = localStorage.getItem('userInfo');
+        const token = userInfo ? JSON.parse(userInfo).token : null;
+        try {
+            const res = await fetch('/api/ticket-types', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            setTicketTypes(data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const fetchCompanies = async () => {
+        // Mock or real fetch for superadmin
+        setCompanies([
+            { id: 1, name: 'TechSolutions Inc.' },
+            { id: 2, name: 'Global Logistics' },
+        ]);
+    };
 
     const handleCreateOrUpdateType = async (e) => {
         e.preventDefault();
