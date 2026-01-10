@@ -185,6 +185,16 @@ sudo certbot --nginx -d smartincident.cbtechpty.com
 
 Sigue las instrucciones (ingresa email, acepta términos). Certbot modificará automáticamente tu configuración de Nginx para redirigir todo el tráfico a HTTPS.
 
+**Nota sobre Renovación Automática**:
+Crtbot crea automáticamente una tarea programada (cron job o systemd timer) para renovar los certificados antes de que expiren. No necesitas hacer nada manual.
+
+Para verificar que la renovación automática funciona correctamente, ejecuta:
+```bash
+sudo certbot renew --dry-run
+```
+Si ves un mensaje de éxito, ¡tu certificado se renovará solo para siempre!
+
+
 ---
 
 ## Resumen de Verificación
