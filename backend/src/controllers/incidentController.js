@@ -65,11 +65,10 @@ exports.createIncident = async (req, res) => {
             }
 
             // 2. Notify Superadmin (and Assignee if exists)
-            // Use Op.or for safer case handling
+            // Revert to strict lowercase 'superadmin' because Postgres ENUMs are case-sensitive and strict.
+            // Capitalized versions cause 'invalid input value for enum' error.
             const admins = await User.findAll({
-                where: {
-                    role: { [Op.or]: ['superadmin', 'Superadmin', 'SuperAdmin'] }
-                }
+                where: { role: 'superadmin' }
             });
 
             for (const admin of admins) {
