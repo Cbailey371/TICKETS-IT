@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Filter, Plus, Search, MoreVertical, X, Save, AlertCircle, Upload, ChevronDown, ChevronUp, RefreshCw, Calendar, User, Building, Trash2 } from 'lucide-react';
+import Combobox from '../components/Combobox';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -508,17 +509,14 @@ const IncidentListPage = () => {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium text-text-muted">Tipo de Incidente</label>
-                                    <select
-                                        value={formData.type_id}
-                                        onChange={e => setFormData({ ...formData, type_id: e.target.value })}
-                                        className="w-full bg-background border border-border-color rounded-lg px-4 py-2 text-text-main focus:ring-2 focus:ring-primary focus:outline-none"
-                                    >
-                                        <option value="">Seleccionar Tipo...</option>
-                                        {ticketTypes.map(type => (
-                                            <option key={type.id} value={type.id}>{type.name}</option>
-                                        ))}
-                                    </select>
+                                    <Combobox
+                                        label="Tipo de Incidente"
+                                        placeholder="Buscar Tipo..."
+                                        options={ticketTypes.map(t => ({ value: t.id, label: t.name }))}
+                                        value={formData.type_id ? parseInt(formData.type_id) : ''}
+                                        onChange={(val) => setFormData({ ...formData, type_id: val })}
+                                        required
+                                    />
                                 </div>
                             </div>
 
