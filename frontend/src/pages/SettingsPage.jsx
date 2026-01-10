@@ -363,7 +363,36 @@ const SettingsPage = () => {
                                     </div>
 
                                     {user?.role === 'superadmin' && (
-                                        <div className="flex justify-end pt-4">
+                                        <div className="flex justify-end pt-4 gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={async () => {
+                                                    const email = prompt('Ingresa el correo para enviar la prueba:');
+                                                    if (email) {
+                                                        const userInfo = localStorage.getItem('userInfo');
+                                                        const token = userInfo ? JSON.parse(userInfo).token : null;
+                                                        try {
+                                                            const res = await fetch('/api/settings/notifications/test', {
+                                                                method: 'POST',
+                                                                headers: {
+                                                                    'Content-Type': 'application/json',
+                                                                    'Authorization': `Bearer ${token}`
+                                                                },
+                                                                body: JSON.stringify({ email })
+                                                            });
+                                                            const data = await res.json();
+                                                            if (res.ok) alert(data.message);
+                                                            else alert(data.error);
+                                                        } catch (e) {
+                                                            alert('Error de conexión');
+                                                        }
+                                                    }
+                                                }}
+                                                className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg font-medium transition-colors"
+                                            >
+                                                <Mail className="w-4 h-4" />
+                                                Probar Configuración
+                                            </button>
                                             <button type="submit" className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors">
                                                 <Save className="w-4 h-4" />
                                                 Guardar Configuración

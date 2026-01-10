@@ -1,4 +1,26 @@
-const { NotificationConfig } = require('../models');
+const { sendEmail } = require('../services/emailService');
+
+exports.sendTestEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ error: 'Email destination required' });
+
+        const success = await sendEmail({
+            to: email,
+            subject: 'Prueba de Configuración SMTP - Tickets SaaS',
+            text: 'Si estás leyendo esto, la configuración de correo funciona correctamente.',
+            html: '<h3 style="color: #2563eb;">Prueba Exitosa</h3><p>El servidor de correo está configurado correctamente en Tickets SaaS.</p>'
+        });
+
+        if (success) {
+            res.json({ message: 'Correo de prueba enviado correctamente' });
+        } else {
+            res.status(500).json({ error: 'Fallo al enviar el correo. Revisa los logs del servidor.' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 exports.getConfig = async (req, res) => {
     try {

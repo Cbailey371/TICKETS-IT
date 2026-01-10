@@ -8,5 +8,6 @@ router.use(authorize('superadmin')); // Only superadmin can manage server settin
 
 router.get('/', notificationConfigController.getConfig);
 router.put('/', notificationConfigController.updateConfig);
+router.post('/test', notificationConfigController.sendTestEmail);
 
 module.exports = router;
