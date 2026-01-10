@@ -14,7 +14,7 @@ const AgentDashboard = () => {
             try {
                 const userInfo = localStorage.getItem('userInfo');
                 const token = userInfo ? JSON.parse(userInfo).token : null;
-                const res = await fetch('http://localhost:3000/api/dashboard', {
+                const res = await fetch('/api/dashboard', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

@@ -45,7 +45,7 @@ const UserListPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/users', {
+            const res = await fetch('/api/users', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -61,7 +61,7 @@ const UserListPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/companies', {
+            const res = await fetch('/api/companies', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -84,8 +84,8 @@ const UserListPage = () => {
 
         try {
             const url = editingUser
-                ? `http://localhost:3000/api/users/${editingUser.id}`
-                : 'http://localhost:3000/api/users';
+                ? `/api/users/${editingUser.id}`
+                : '/api/users';
 
             const method = editingUser ? 'PUT' : 'POST';
 
@@ -125,7 +125,7 @@ const UserListPage = () => {
         const token = userInfo ? JSON.parse(userInfo).token : null;
 
         try {
-            await fetch(`http://localhost:3000/api/users/${id}`, {
+            await fetch(`/api/users/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

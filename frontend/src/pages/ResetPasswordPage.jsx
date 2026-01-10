@@ -21,7 +21,7 @@ const ResetPasswordPage = () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await fetch(`http://localhost:3000/api/auth/reset-password/${token}`, {
+            const res = await fetch(`/api/auth/reset-password/${token}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password }),

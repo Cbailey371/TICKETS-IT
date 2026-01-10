@@ -33,7 +33,7 @@ const SettingsPage = () => {
         const userInfo = localStorage.getItem('userInfo');
         const token = userInfo ? JSON.parse(userInfo).token : null;
         try {
-            const res = await fetch('http://localhost:3000/api/settings/notifications', {
+            const res = await fetch('/api/settings/notifications', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -55,7 +55,7 @@ const SettingsPage = () => {
         const token = userInfo ? JSON.parse(userInfo).token : null;
 
         try {
-            const res = await fetch('http://localhost:3000/api/auth/change-password', {
+            const res = await fetch('/api/auth/change-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ const SettingsPage = () => {
         const token = userInfo ? JSON.parse(userInfo).token : null;
 
         try {
-            const res = await fetch('http://localhost:3000/api/settings/notifications', {
+            const res = await fetch('/api/settings/notifications', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ const SettingsPage = () => {
         const userInfo = localStorage.getItem('userInfo');
         const token = userInfo ? JSON.parse(userInfo).token : null;
         try {
-            const res = await fetch('http://localhost:3000/api/ticket-types', {
+            const res = await fetch('/api/ticket-types', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -131,7 +131,7 @@ const SettingsPage = () => {
         const token = userInfo ? JSON.parse(userInfo).token : null;
 
         try {
-            const res = await fetch('http://localhost:3000/api/ticket-types', {
+            const res = await fetch('/api/ticket-types', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ const SettingsPage = () => {
         const token = userInfo ? JSON.parse(userInfo).token : null;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/ticket-types/${id}`, {
+            const res = await fetch(`/api/ticket-types/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

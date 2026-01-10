@@ -38,7 +38,7 @@ const CompanyListPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/companies', {
+            const res = await fetch('/api/companies', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -57,8 +57,8 @@ const CompanyListPage = () => {
 
         try {
             const url = editingCompany
-                ? `http://localhost:3000/api/companies/${editingCompany.id}`
-                : 'http://localhost:3000/api/companies';
+                ? `/api/companies/${editingCompany.id}`
+                : '/api/companies';
 
             const method = editingCompany ? 'PUT' : 'POST';
 
@@ -88,7 +88,7 @@ const CompanyListPage = () => {
         const token = userInfo ? JSON.parse(userInfo).token : null;
 
         try {
-            await fetch(`http://localhost:3000/api/companies/${id}`, {
+            await fetch(`/api/companies/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

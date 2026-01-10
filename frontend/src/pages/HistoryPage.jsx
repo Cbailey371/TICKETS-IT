@@ -46,7 +46,7 @@ const HistoryPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/users', {
+            const res = await fetch('/api/users', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -60,7 +60,7 @@ const HistoryPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/companies', {
+            const res = await fetch('/api/companies', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -85,7 +85,7 @@ const HistoryPage = () => {
             if (filterCompany !== 'all') params.append('company_id', filterCompany);
             if (searchTerm) params.append('ticket_code', searchTerm); // Assuming simple search by code/title? Backend implemented ticket_code like
 
-            const res = await fetch(`http://localhost:3000/api/incidents?${params.toString()}`, {
+            const res = await fetch(`/api/incidents?${params.toString()}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();

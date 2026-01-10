@@ -39,7 +39,7 @@ const IncidentDetailPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch(`http://localhost:3000/api/incidents/${id}`, {
+            const res = await fetch(`/api/incidents/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Failed to fetch');
@@ -61,7 +61,7 @@ const IncidentDetailPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch(`http://localhost:3000/api/incidents/${id}/comments`, {
+            const res = await fetch(`/api/incidents/${id}/comments`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -77,7 +77,7 @@ const IncidentDetailPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/users', {
+            const res = await fetch('/api/users', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -105,7 +105,7 @@ const IncidentDetailPage = () => {
                 formData.append('file', selectedFile);
             }
 
-            const res = await fetch(`http://localhost:3000/api/incidents/${id}/comments`, {
+            const res = await fetch(`/api/incidents/${id}/comments`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -131,7 +131,7 @@ const IncidentDetailPage = () => {
             const token = userInfo ? JSON.parse(userInfo).token : null;
 
             // 1. Post Closing Comment
-            await fetch(`http://localhost:3000/api/incidents/${id}/comments`, {
+            await fetch(`/api/incidents/${id}/comments`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ const IncidentDetailPage = () => {
             });
 
             // 2. Update Status to Closed
-            const res = await fetch(`http://localhost:3000/api/incidents/${id}`, {
+            const res = await fetch(`/api/incidents/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ const IncidentDetailPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch(`http://localhost:3000/api/incidents/${id}`, {
+            const res = await fetch(`/api/incidents/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -268,18 +268,18 @@ const IncidentDetailPage = () => {
                                         {/* Debug Log */ console.log('Attachment Path:', att.file_path)}
                                         {isImage ? (
                                             <div
-                                                onClick={() => setPreviewImage(`http://localhost:3000/${att.file_path.replace(/\\/g, '/')}`)}
+                                                onClick={() => setPreviewImage(`/${att.file_path.replace(/\\/g, '/')}`)}
                                                 className="cursor-pointer transition-transform hover:scale-105"
                                             >
                                                 <img
-                                                    src={`http://localhost:3000/${att.file_path.replace(/\\/g, '/')}`}
+                                                    src={`/${att.file_path.replace(/\\/g, '/')}`}
                                                     alt={att.original_name}
                                                     className="w-24 h-24 object-cover rounded-lg border border-border-color shadow-sm group-hover:shadow-md"
                                                 />
                                             </div>
                                         ) : (
                                             <a
-                                                href={`http://localhost:3000/${att.file_path.replace(/\\/g, '/')}`}
+                                                href={`/${att.file_path.replace(/\\/g, '/')}`}
 
                                                 target="_blank"
                                                 rel="noopener noreferrer"
@@ -409,18 +409,18 @@ const IncidentDetailPage = () => {
                                                             <div key={att.id}>
                                                                 {isImage ? (
                                                                     <div
-                                                                        onClick={() => setPreviewImage(`http://localhost:3000/${att.file_path.replace(/\\/g, '/')}`)}
+                                                                        onClick={() => setPreviewImage(`/${att.file_path.replace(/\\/g, '/')}`)}
                                                                         className="cursor-pointer group"
                                                                     >
                                                                         <img
-                                                                            src={`http://localhost:3000/${att.file_path.replace(/\\/g, '/')}`}
+                                                                            src={`/${att.file_path.replace(/\\/g, '/')}`}
                                                                             alt={att.original_name}
                                                                             className="w-full h-24 object-cover rounded-lg border border-border-color group-hover:opacity-90 transition-opacity"
                                                                         />
                                                                     </div>
                                                                 ) : (
                                                                     <a
-                                                                        href={`http://localhost:3000/${att.file_path.replace(/\\/g, '/')}`}
+                                                                        href={`/${att.file_path.replace(/\\/g, '/')}`}
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
                                                                         className="flex items-center gap-2 text-primary hover:text-primary/80 text-xs p-2 bg-background/50 rounded border border-border-color/50"

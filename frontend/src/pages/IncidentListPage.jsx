@@ -50,7 +50,7 @@ const IncidentListPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/users', {
+            const res = await fetch('/api/users', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -64,7 +64,7 @@ const IncidentListPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/companies', {
+            const res = await fetch('/api/companies', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -78,7 +78,7 @@ const IncidentListPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/incidents?status=open,in_progress,resolved', {
+            const res = await fetch('/api/incidents?status=open,in_progress,resolved', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -94,7 +94,7 @@ const IncidentListPage = () => {
         try {
             const userInfo = localStorage.getItem('userInfo');
             const token = userInfo ? JSON.parse(userInfo).token : null;
-            const res = await fetch('http://localhost:3000/api/ticket-types', {
+            const res = await fetch('/api/ticket-types', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -122,7 +122,7 @@ const IncidentListPage = () => {
         }
 
         try {
-            const res = await fetch('http://localhost:3000/api/incidents', {
+            const res = await fetch('/api/incidents', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -156,7 +156,7 @@ const IncidentListPage = () => {
         const token = userInfo ? JSON.parse(userInfo).token : null;
 
         try {
-            const res = await fetch(`http://localhost:3000/api/incidents/${id}`, {
+            const res = await fetch(`/api/incidents/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
