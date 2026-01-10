@@ -28,13 +28,13 @@ exports.createUser = async (req, res) => {
         const newUser = await User.create({
             name,
             email,
-            password: hashedPassword,
+            password_hash: hashedPassword, // Fixed: match model field name
             role,
             company_id: company_id || null // Superadmins/Agents might differ
         });
 
         // Exclude password from response
-        const { password: _, ...userWithoutPassword } = newUser.toJSON();
+        const { password_hash: _, ...userWithoutPassword } = newUser.toJSON();
         res.status(201).json(userWithoutPassword);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -54,7 +54,7 @@ exports.getAllUsers = async (req, res) => {
         const users = await User.findAll({
             where: whereClause,
             include: [{ model: Company, as: 'company', attributes: ['id', 'name'] }],
-            attributes: { exclude: ['password'] }
+            attributes: { exclude: ['password_hash', 'reset_token'] }
         });
 
         res.json(users);
@@ -85,12 +85,12 @@ exports.updateUser = async (req, res) => {
 
         let updateData = { name, email, role, company_id };
         if (password) {
-            updateData.password = await bcrypt.hash(password, 10);
+            updateData.password_hash = await bcrypt.hash(password, 10);
         }
 
         await user.update(updateData);
 
-        const { password: _, ...userWithoutPassword } = user.toJSON();
+        const { password_hash: _, ...userWithoutPassword } = user.toJSON();
         res.json(userWithoutPassword);
     } catch (error) {
         res.status(500).json({ error: error.message });
