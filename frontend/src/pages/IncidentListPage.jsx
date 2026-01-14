@@ -35,6 +35,7 @@ const IncidentListPage = () => {
     });
     const [selectedFile, setSelectedFile] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         fetchIncidents();
@@ -107,6 +108,9 @@ const IncidentListPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
         const userInfo = localStorage.getItem('userInfo');
         const token = userInfo ? JSON.parse(userInfo).token : null;
 
@@ -141,6 +145,8 @@ const IncidentListPage = () => {
             }
         } catch (error) {
             console.error(error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -565,10 +571,11 @@ const IncidentListPage = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition-colors cursor-pointer"
+                                    disabled={isSubmitting}
+                                    className={`flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition-colors cursor-pointer ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     <Save className="w-4 h-4" />
-                                    Nuevo Incidente
+                                    {isSubmitting ? 'Creando...' : 'Nuevo Incidente'}
                                 </button>
                             </div>
                         </form>
