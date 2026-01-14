@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, Clock, Activity, Users, Building, AlertTriangle, ShieldCheck, Timer, OctagonAlert, PlusCircle, Layers, Calendar, Filter, RefreshCw } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, Activity, Users, Building, AlertTriangle, ShieldCheck, Timer, OctagonAlert, PlusCircle, Layers, Calendar, Filter, RefreshCw, ClipboardList, AlarmClockCheck, Hourglass, Inbox } from 'lucide-react';
 import { motion } from 'framer-motion';
 import DashboardCard from './DashboardCard';
 import { Link } from 'react-router-dom';
@@ -167,7 +167,7 @@ const SuperadminDashboard = () => {
                     title="Incidentes Activos"
                     subtitle="Carga operativa actual"
                     value={data?.metrics.active || 0}
-                    icon={Activity}
+                    icon={ClipboardList}
                     color="bg-blue-500"
                     delay={0}
                 />
@@ -183,7 +183,7 @@ const SuperadminDashboard = () => {
                     title="SLA Cumplimiento"
                     subtitle="Salud contractual"
                     value={data?.metrics.slaCompliance || '100%'}
-                    icon={ShieldCheck}
+                    icon={AlarmClockCheck}
                     color="bg-emerald-500"
                     delay={0.2}
                 />
@@ -191,7 +191,7 @@ const SuperadminDashboard = () => {
                     title="MTTR Promedio"
                     subtitle="Eficiencia"
                     value={data?.metrics.mttr || '0h 0m'}
-                    icon={Timer}
+                    icon={Hourglass}
                     color="bg-orange-500"
                     delay={0.3}
                 />
@@ -207,7 +207,7 @@ const SuperadminDashboard = () => {
                     title="Nuevos Hoy"
                     subtitle="Presión diaria"
                     value={data?.metrics.newToday || 0}
-                    icon={PlusCircle}
+                    icon={Inbox}
                     color="bg-primary"
                     delay={0.5}
                 />
