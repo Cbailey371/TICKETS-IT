@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Activity } from 'lucide-react';
 
-const DashboardCard = ({ title, value, icon: Icon, color, trend, delay = 0 }) => {
+const DashboardCard = ({ title, subtitle, value, icon: Icon, color, trend, delay = 0 }) => {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -15,6 +15,7 @@ const DashboardCard = ({ title, value, icon: Icon, color, trend, delay = 0 }) =>
             <div className="flex items-start justify-between relative z-10">
                 <div>
                     <p className="text-text-muted font-medium text-sm mb-1">{title}</p>
+                    {subtitle && <p className="text-[10px] text-text-muted/60 mb-1 leading-tight">{subtitle}</p>}
                     <h3 className="text-3xl font-bold text-text-main tracking-tight">{value}</h3>
                 </div>
                 <div className={`p-3 rounded-xl ${color} bg-opacity-10`}>

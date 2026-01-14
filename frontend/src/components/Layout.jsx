@@ -7,7 +7,7 @@ const Layout = () => {
 
     const getTitle = () => {
         switch (location.pathname) {
-            case '/': return 'Panel de Control';
+            case '/': return 'Dashboard';
             case '/companies': return 'Gestión de Empresas';
             case '/users': return 'Gestión de Usuarios';
             case '/incidents': return 'Lista de Incidentes';
