@@ -27,7 +27,7 @@ const Layout = () => {
                         <Outlet />
                     </div>
                     <footer className="mt-8 pt-6 border-t border-border-color/50 text-center">
-                        <p className="text-[10px] text-text-muted/80 font-medium tracking-wider uppercase">
+                        <p className="text-[10px] text-text-muted font-medium tracking-wider uppercase">
                             v1.0.0 (Build 2026.01.14) - © 2026 CBTECH Consulting Solutions Systems. Todos los derechos reservados.
                         </p>
                     </footer>
