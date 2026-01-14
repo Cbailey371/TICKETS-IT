@@ -95,7 +95,7 @@ const LoginPage = () => {
                 </form>
             </div>
             <div className="absolute bottom-6 left-0 right-0 text-center">
-                <p className="text-[10px] text-text-muted/30 font-medium tracking-widest uppercase">
+                <p className="text-[10px] text-text-muted/60 font-medium tracking-widest uppercase">
                     v1.0.0 (Build 2026.01.14) - © 2026 CBTECH Consulting Solutions Systems. Todos los derechos reservados.
                 </p>
             </div>
