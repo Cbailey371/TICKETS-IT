@@ -44,7 +44,7 @@ const IncidentListPage = () => {
         if (['superadmin', 'company_admin', 'agent'].includes(user?.role)) {
             fetchUsers();
         }
-        if (['superadmin', 'company_admin'].includes(user?.role)) {
+        if (['superadmin', 'company_admin', 'agent'].includes(user?.role)) {
             fetchCompanies();
         }
 
@@ -62,7 +62,7 @@ const IncidentListPage = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
-            setUsersList(data);
+            setUsersList(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error(error);
         }
@@ -76,7 +76,7 @@ const IncidentListPage = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
-            setCompaniesList(data);
+            setCompaniesList(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error(error);
         }
@@ -90,7 +90,7 @@ const IncidentListPage = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
-            setIncidents(data);
+            setIncidents(Array.isArray(data) ? data : []);
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -106,7 +106,7 @@ const IncidentListPage = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
-            setTicketTypes(data);
+            setTicketTypes(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error(error);
         }
@@ -330,7 +330,7 @@ const IncidentListPage = () => {
                                     className="w-full bg-background border border-border-color rounded-lg px-3 py-1.5 text-sm text-text-main focus:ring-2 focus:ring-primary focus:outline-none"
                                 >
                                     <option value="all">Todos</option>
-                                    {usersList.map(u => (
+                                    {Array.isArray(usersList) && usersList.map(u => (
                                         <option key={u.id} value={u.id}>{u.name}</option>
                                     ))}
                                 </select>
@@ -348,7 +348,7 @@ const IncidentListPage = () => {
                                     className="w-full bg-background border border-border-color rounded-lg px-3 py-1.5 text-sm text-text-main focus:ring-2 focus:ring-primary focus:outline-none"
                                 >
                                     <option value="all">Todas</option>
-                                    {companiesList.map(c => (
+                                    {Array.isArray(companiesList) && companiesList.map(c => (
                                         <option key={c.id} value={c.id}>{c.name}</option>
                                     ))}
                                 </select>
@@ -498,7 +498,7 @@ const IncidentListPage = () => {
                                         className="w-full bg-background border border-border-color rounded-lg px-4 py-2 text-text-main focus:ring-2 focus:ring-primary focus:outline-none"
                                     >
                                         <option value="">Seleccionar Empresa...</option>
-                                        {companiesList.map(c => (
+                                        {Array.isArray(companiesList) && companiesList.map(c => (
                                             <option key={c.id} value={c.id}>{c.name}</option>
                                         ))}
                                     </select>
