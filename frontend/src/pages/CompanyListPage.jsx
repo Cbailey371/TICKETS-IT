@@ -9,6 +9,8 @@ const CompanyListPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [editingCompany, setEditingCompany] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [showFilters, setShowFilters] = useState(false);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -108,9 +110,16 @@ const CompanyListPage = () => {
         setFormData({ name: '', address: '', contact_email: '', status: 'active' });
     };
 
-    const filteredCompanies = companies.filter(c =>
-        c.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredCompanies = companies.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = filterStatus === 'all' ? true : c.status === filterStatus;
+        return matchesSearch && matchesStatus;
+    });
+
+    const clearFilters = () => {
+        setSearchTerm('');
+        setFilterStatus('all');
+    };
 
     return (
         <div className="space-y-6">
@@ -128,7 +137,7 @@ const CompanyListPage = () => {
             </div>
 
             <div className="bg-surface border border-border-color rounded-2xl overflow-hidden">
-                <div className="p-4 border-b border-border-color flex gap-4">
+                <div className="p-4 border-b border-border-color flex flex-wrap gap-4 items-center">
                     <div className="relative flex-1 max-w-md">
                         <Search className="absolute left-3 top-2.5 w-4 h-4 text-text-muted" />
                         <input
@@ -139,7 +148,41 @@ const CompanyListPage = () => {
                             className="w-full bg-background border border-border-color rounded-lg pl-9 pr-4 py-2 text-sm text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-text-muted/70"
                         />
                     </div>
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium transition-colors cursor-pointer ${showFilters
+                            ? 'bg-blue-600/10 border-blue-600 text-blue-600'
+                            : 'bg-surface border-border-color text-text-muted hover:text-text-main hover:bg-background'
+                            }`}
+                    >
+                        Filtrar
+                    </button>
+                    {(filterStatus !== 'all' || searchTerm !== '') && (
+                        <button
+                            onClick={clearFilters}
+                            className="text-xs text-blue-600 hover:underline cursor-pointer"
+                        >
+                            Limpiar
+                        </button>
+                    )}
                 </div>
+
+                {showFilters && (
+                    <div className="p-4 border-b border-border-color bg-background/30 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in slide-in-from-top-2 duration-200">
+                        <div className="space-y-1">
+                            <label className="text-xs font-medium text-text-muted">Estado</label>
+                            <select
+                                value={filterStatus}
+                                onChange={(e) => setFilterStatus(e.target.value)}
+                                className="w-full bg-background border border-border-color rounded-lg px-3 py-1.5 text-sm text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            >
+                                <option value="all">Todos</option>
+                                <option value="active">Activo</option>
+                                <option value="inactive">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                )}
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">

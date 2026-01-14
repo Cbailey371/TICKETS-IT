@@ -8,6 +8,9 @@ const UserListPage = () => {
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [showFilters, setShowFilters] = useState(false);
+    const [filterRole, setFilterRole] = useState('all');
+    const [filterCompany, setFilterCompany] = useState('all');
 
     // Modal State
     const [showModal, setShowModal] = useState(false);
@@ -143,10 +146,21 @@ const UserListPage = () => {
         setFormData({ name: '', email: '', password: '', role: 'client', company_id: '' });
     };
 
-    const filteredUsers = users.filter(u =>
-        u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredUsers = users.filter(u => {
+        const matchesSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            u.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesRole = filterRole === 'all' ? true : u.role === filterRole;
+        const matchesCompany = filterCompany === 'all' ? true : (u.company_id || u.company?.id) === parseInt(filterCompany);
+
+        return matchesSearch && matchesRole && matchesCompany;
+    });
+
+    const clearFilters = () => {
+        setSearchTerm('');
+        setFilterRole('all');
+        setFilterCompany('all');
+    };
 
     return (
         <div className="space-y-6">
@@ -164,7 +178,7 @@ const UserListPage = () => {
             </div>
 
             <div className="bg-surface border border-border-color rounded-2xl overflow-hidden">
-                <div className="p-4 border-b border-border-color flex gap-4">
+                <div className="p-4 border-b border-border-color flex flex-wrap gap-4 items-center">
                     <div className="relative flex-1 max-w-md">
                         <Search className="absolute left-3 top-2.5 w-4 h-4 text-text-muted" />
                         <input
@@ -175,7 +189,58 @@ const UserListPage = () => {
                             className="w-full bg-background border border-border-color rounded-lg pl-9 pr-4 py-2 text-sm text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-text-muted/70"
                         />
                     </div>
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium transition-colors cursor-pointer ${showFilters
+                            ? 'bg-blue-600/10 border-blue-600 text-blue-600'
+                            : 'bg-surface border-border-color text-text-muted hover:text-text-main hover:bg-background'
+                            }`}
+                    >
+                        Filtrar
+                    </button>
+                    {(filterRole !== 'all' || filterCompany !== 'all' || searchTerm !== '') && (
+                        <button
+                            onClick={clearFilters}
+                            className="text-xs text-blue-600 hover:underline cursor-pointer"
+                        >
+                            Limpiar
+                        </button>
+                    )}
                 </div>
+
+                {showFilters && (
+                    <div className="p-4 border-b border-border-color bg-background/30 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in slide-in-from-top-2 duration-200">
+                        <div className="space-y-1">
+                            <label className="text-xs font-medium text-text-muted">Rol</label>
+                            <select
+                                value={filterRole}
+                                onChange={(e) => setFilterRole(e.target.value)}
+                                className="w-full bg-background border border-border-color rounded-lg px-3 py-1.5 text-sm text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            >
+                                <option value="all">Todos los roles</option>
+                                <option value="superadmin">Super Admin</option>
+                                <option value="agent">Agente</option>
+                                <option value="company_admin">Admin Empresa</option>
+                                <option value="client">Cliente</option>
+                            </select>
+                        </div>
+                        {user?.role === 'superadmin' && (
+                            <div className="space-y-1">
+                                <label className="text-xs font-medium text-text-muted">Empresa</label>
+                                <select
+                                    value={filterCompany}
+                                    onChange={(e) => setFilterCompany(e.target.value)}
+                                    className="w-full bg-background border border-border-color rounded-lg px-3 py-1.5 text-sm text-text-main focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                >
+                                    <option value="all">Todas las empresas</option>
+                                    {companies.map(c => (
+                                        <option key={c.id} value={c.id}>{c.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
