@@ -18,8 +18,8 @@ const DashboardCard = ({ title, subtitle, value, icon: Icon, color, trend, delay
                     {subtitle && <p className="text-[10px] text-text-muted/60 mb-1 leading-tight">{subtitle}</p>}
                     <h3 className="text-3xl font-bold text-text-main tracking-tight">{value}</h3>
                 </div>
-                <div className={`p-3 rounded-xl bg-opacity-10 flex items-center justify-center ${color.replace('bg-', 'text-')} ${color.replace('bg-', 'bg-')}`}>
-                    <Icon className="w-6 h-6" />
+                <div className={`p-3 rounded-xl ${color} flex items-center justify-center shadow-lg shadow-black/10`}>
+                    <Icon className="w-6 h-6 text-white" />
                 </div>
             </div>
 

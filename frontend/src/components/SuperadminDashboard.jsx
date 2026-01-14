@@ -183,7 +183,7 @@ const SuperadminDashboard = () => {
                     title="SLA Cumplimiento"
                     subtitle="Salud contractual"
                     value={data?.metrics.slaCompliance || '100%'}
-                    icon={FileCheck}
+                    icon={Timer}
                     color="bg-emerald-500"
                     delay={0.2}
                 />
