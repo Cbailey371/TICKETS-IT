@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, Clock, Activity, Users, Building, AlertTriangle, ShieldCheck, Timer, OctagonAlert, PlusCircle, Layers, Calendar, Filter, RefreshCw, ClipboardList, AlarmClockCheck, Hourglass, Inbox } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, Activity, Users, Building, AlertTriangle, ShieldCheck, Timer, OctagonAlert, PlusCircle, Layers, Calendar, Filter, RefreshCw, ClipboardList, Hourglass, Inbox, FileCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import DashboardCard from './DashboardCard';
 import { Link } from 'react-router-dom';
@@ -183,7 +183,7 @@ const SuperadminDashboard = () => {
                     title="SLA Cumplimiento"
                     subtitle="Salud contractual"
                     value={data?.metrics.slaCompliance || '100%'}
-                    icon={AlarmClockCheck}
+                    icon={FileCheck}
                     color="bg-emerald-500"
                     delay={0.2}
                 />
