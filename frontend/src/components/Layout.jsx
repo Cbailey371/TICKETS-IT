@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
 const Layout = () => {
     const location = useLocation();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const getTitle = () => {
         switch (location.pathname) {
@@ -19,10 +21,10 @@ const Layout = () => {
 
     return (
         <div className="flex bg-background h-screen font-sans overflow-hidden">
-            <Sidebar />
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <Header title={getTitle()} />
-                <main className="flex-1 overflow-auto p-8 bg-black/20 flex flex-col">
+            <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+            <div className="flex-1 flex flex-col overflow-hidden relative">
+                <Header title={getTitle()} onMenuClick={() => setSidebarOpen(true)} />
+                <main className="flex-1 overflow-auto p-4 md:p-8 bg-black/20 flex flex-col">
                     <div className="flex-1">
                         <Outlet />
                     </div>

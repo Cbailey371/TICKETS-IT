@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bell, Sun, Moon, CheckCheck, Info, AlertCircle } from 'lucide-react';
+import { Bell, Sun, Moon, CheckCheck, Info, AlertCircle, Menu } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
-const Header = ({ title }) => {
+const Header = ({ title, onMenuClick }) => {
     const { theme, toggleTheme } = useTheme();
     const [showNotifications, setShowNotifications] = useState(false);
     const popoverRef = useRef(null);
@@ -31,10 +31,19 @@ const Header = ({ title }) => {
     }, []);
 
     return (
-        <header className="h-20 border-b border-border-color bg-surface/50 backdrop-blur-xl flex items-center justify-between px-8 sticky top-0 z-50 transition-colors duration-200">
-            <h1 className="text-2xl font-bold text-text-main">{title}</h1>
+        <header className="h-20 border-b border-border-color bg-surface/50 backdrop-blur-xl flex items-center justify-between px-4 md:px-8 sticky top-0 z-50 transition-colors duration-200">
+            <div className="flex items-center gap-4">
+                <button
+                    onClick={onMenuClick}
+                    className="p-2 md:hidden text-text-muted hover:text-text-main transition-colors rounded-lg hover:bg-background cursor-pointer"
+                    aria-label="Menu"
+                >
+                    <Menu className="w-6 h-6" />
+                </button>
+                <h1 className="text-xl md:text-2xl font-bold text-text-main truncate max-w-[200px] md:max-w-none">{title}</h1>
+            </div>
 
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 md:gap-6">
                 <button
                     onClick={toggleTheme}
                     className="p-2 text-text-muted hover:text-text-main transition-colors rounded-lg hover:bg-background cursor-pointer"
